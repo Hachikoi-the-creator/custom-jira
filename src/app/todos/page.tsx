@@ -7,6 +7,7 @@ import { ListChecks, GripVertical, Plus, Trash2 } from 'lucide-react'
 type Row = {
   id: string
   text: string
+  completed: boolean
   sort_order: number
   created_at: string
 }
@@ -27,7 +28,7 @@ export default function TodosPage() {
     setLoadError(null)
     const { data, error } = await supabase
       .from('simple_todos')
-      .select('id, text, sort_order, created_at')
+      .select('id, text, completed, sort_order, created_at')
       .order('sort_order', { ascending: true })
       .order('created_at', { ascending: true })
     if (error) {
@@ -67,7 +68,7 @@ export default function TodosPage() {
     const { data, error } = await supabase
       .from('simple_todos')
       .insert({ text: newText.trim(), sort_order: nextOrder })
-      .select('id, text, sort_order, created_at')
+      .select('id, text, completed, sort_order, created_at')
       .single()
     if (!error && data) {
       setItems(prev => [...prev, data as Row].sort((a, b) => a.sort_order - b.sort_order || a.created_at.localeCompare(b.created_at)))
@@ -87,6 +88,11 @@ export default function TodosPage() {
     if (!trimmed) return
     const { error } = await supabase.from('simple_todos').update({ text: trimmed }).eq('id', id)
     if (!error) setItems(prev => prev.map(i => (i.id === id ? { ...i, text: trimmed } : i)))
+  }
+
+  async function toggleCompleted(id: string, completed: boolean) {
+    const { error } = await supabase.from('simple_todos').update({ completed }).eq('id', id)
+    if (!error) setItems(prev => prev.map(i => (i.id === id ? { ...i, completed } : i)))
   }
 
   function startEdit(row: Row) {
@@ -173,7 +179,9 @@ export default function TodosPage() {
           </div>
           <div>
             <h1 className="page-title">Todos</h1>
-            <p className="text-muted-foreground text-sm mt-0.5">Click a line to edit. Drag the handle to reorder.</p>
+            <p className="text-muted-foreground text-sm mt-0.5">
+              Use the checkbox to complete. Click text to edit. Drag the handle to reorder.
+            </p>
           </div>
         </div>
 
@@ -230,6 +238,17 @@ export default function TodosPage() {
                 <GripVertical size={16} />
               </button>
 
+              <div className="flex-shrink-0 flex items-center pl-0 pr-1">
+                <input
+                  type="checkbox"
+                  checked={item.completed}
+                  onChange={e => void toggleCompleted(item.id, e.target.checked)}
+                  onClick={e => e.stopPropagation()}
+                  className="size-4 rounded border border-border bg-background text-primary focus:ring-2 focus:ring-ring focus:ring-offset-0 cursor-pointer"
+                  aria-label={item.completed ? 'Mark incomplete' : 'Mark complete'}
+                />
+              </div>
+
               <div className="min-w-0 flex-1 py-2 pr-1">
                 {editingId === item.id ? (
                   <input
@@ -255,7 +274,11 @@ export default function TodosPage() {
                     onClick={() => startEdit(item)}
                     className="w-full text-left text-sm text-foreground py-1.5 px-1 rounded-md hover:bg-muted/50 transition-colors"
                   >
-                    {item.text || <span className="text-muted-foreground">Empty — click to write</span>}
+                    {item.text ? (
+                      <span className={item.completed ? 'text-muted-foreground line-through' : ''}>{item.text}</span>
+                    ) : (
+                      <span className="text-muted-foreground">Empty — click to write</span>
+                    )}
                   </button>
                 )}
               </div>
