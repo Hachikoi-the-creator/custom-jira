@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
+import ThemeSwitcher from '@/components/theme-switcher'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -21,14 +22,14 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+    <div className="min-h-screen bg-background flex items-center justify-center">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-[#0f1f3d] mb-4">
-            <span className="text-white font-bold text-lg">D</span>
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary mb-4">
+            <span className="text-primary-foreground font-bold text-lg">D</span>
           </div>
-          <h1 className="text-2xl font-bold text-[#0f1f3d]">Workspace</h1>
-          <p className="text-slate-500 text-sm mt-1">Dorstep · Sistema de trabajo</p>
+          <h1 className="text-2xl font-bold text-foreground">Workspace</h1>
+          <p className="text-muted-foreground text-sm mt-1">Dorstep · Sistema de trabajo</p>
         </div>
         <div className="card">
           <form onSubmit={handleLogin} className="space-y-4">
@@ -46,6 +47,7 @@ export default function LoginPage() {
             </button>
           </form>
         </div>
+        <ThemeSwitcher variant="surface" />
       </div>
     </div>
   )

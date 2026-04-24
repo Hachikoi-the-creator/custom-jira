@@ -38,7 +38,7 @@ function Form() {
             <div className="col-span-2"><label className="label">Descripción del problema *</label><textarea className="input min-h-[120px] resize-none" required value={form.description} onChange={e => set('description', e.target.value)} placeholder="¿Qué pasó? ¿Cuándo ocurre?" /></div>
             <div className="col-span-2"><label className="label">Solución aplicada *</label><textarea className="input min-h-[120px] resize-none" required value={form.solution} onChange={e => set('solution', e.target.value)} placeholder="¿Cómo se resolvió?" /></div>
           </div>
-          <div className="flex justify-end gap-3 pt-2 border-t border-slate-100">
+          <div className="flex justify-end gap-3 pt-2 border-t border-border/60">
             <Link href="/problems" className="btn-secondary">Cancelar</Link>
             <button type="submit" className="btn-primary" disabled={loading}>{loading ? 'Guardando...' : 'Registrar'}</button>
           </div>

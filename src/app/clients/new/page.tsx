@@ -41,7 +41,7 @@ export default function NewClientPage() {
             <div><label className="label">Tags (separados por coma)</label><input className="input" value={form.tags} onChange={e => set('tags', e.target.value)} placeholder="BMW, GWM" /></div>
             <div className="col-span-2"><label className="label">Notas</label><textarea className="input min-h-[100px] resize-none" value={form.notes} onChange={e => set('notes', e.target.value)} placeholder="Información relevante..." /></div>
           </div>
-          <div className="flex justify-end gap-3 pt-2 border-t border-slate-100">
+          <div className="flex justify-end gap-3 pt-2 border-t border-border/60">
             <Link href="/clients" className="btn-secondary">Cancelar</Link>
             <button type="submit" className="btn-primary" disabled={loading}>{loading ? 'Guardando...' : 'Crear cliente'}</button>
           </div>

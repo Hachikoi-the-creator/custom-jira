@@ -48,11 +48,11 @@ function NewMeetingForm() {
           </div>
           <div className="card"><label className="label">Notas de la reunión</label><textarea className="input min-h-[160px] resize-y mt-1.5" value={form.content} onChange={e => set('content', e.target.value)} placeholder="Puntos tratados, decisiones..." /></div>
           <div className="card space-y-3">
-            <div className="flex items-center justify-between"><label className="label">Pendientes</label><button type="button" onClick={addItem} className="text-xs text-blue-600 hover:underline flex items-center gap-1"><Plus size={13} />Agregar</button></div>
+            <div className="flex items-center justify-between"><label className="label">Pendientes</label><button type="button" onClick={addItem} className="text-xs text-primary hover:underline flex items-center gap-1"><Plus size={13} />Agregar</button></div>
             {actionItems.map((item, idx) => (
               <div key={idx} className="flex gap-2">
                 <input className="input" value={item} onChange={e => setItem(idx, e.target.value)} placeholder={`Pendiente ${idx + 1}`} />
-                {actionItems.length > 1 && <button type="button" onClick={() => removeItem(idx)} className="text-slate-400 hover:text-red-500"><Trash2 size={15} /></button>}
+                {actionItems.length > 1 && <button type="button" onClick={() => removeItem(idx)} className="text-muted-foreground hover:text-red-500"><Trash2 size={15} /></button>}
               </div>
             ))}
           </div>

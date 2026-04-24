@@ -51,7 +51,7 @@ export default function EditClientPage({ params }: { params: Promise<{ id: strin
             <div><label className="label">Tags</label><input className="input" value={form.tags} onChange={e => set('tags', e.target.value)} /></div>
             <div className="col-span-2"><label className="label">Notas</label><textarea className="input min-h-[100px] resize-none" value={form.notes} onChange={e => set('notes', e.target.value)} /></div>
           </div>
-          <div className="flex justify-between pt-2 border-t border-slate-100">
+          <div className="flex justify-between pt-2 border-t border-border/60">
             <button type="button" onClick={handleDelete} className="btn-danger flex items-center gap-2"><Trash2 size={15} />Eliminar</button>
             <div className="flex gap-3">
               <Link href={`/clients/${id}`} className="btn-secondary">Cancelar</Link>

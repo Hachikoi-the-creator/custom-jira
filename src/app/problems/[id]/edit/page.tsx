@@ -46,7 +46,7 @@ export default function EditProblemPage({ params }: { params: Promise<{ id: stri
             <div className="col-span-2"><label className="label">Descripción *</label><textarea className="input min-h-[100px] resize-none" required value={form.description} onChange={e => set('description', e.target.value)} /></div>
             <div className="col-span-2"><label className="label">Solución *</label><textarea className="input min-h-[100px] resize-none" required value={form.solution} onChange={e => set('solution', e.target.value)} /></div>
           </div>
-          <div className="flex justify-between pt-2 border-t border-slate-100">
+          <div className="flex justify-between pt-2 border-t border-border/60">
             <button type="button" onClick={handleDelete} className="btn-danger flex items-center gap-2"><Trash2 size={15} />Eliminar</button>
             <div className="flex gap-3"><Link href={`/problems/${id}`} className="btn-secondary">Cancelar</Link><button type="submit" className="btn-primary" disabled={loading}>{loading ? 'Guardando...' : 'Guardar'}</button></div>
           </div>

@@ -21,7 +21,7 @@ type Row = {
 }
 
 const COLUMNS: { status: TaskStatus; title: string; className: string }[] = [
-  { status: 'todo',        title: 'To Do',       className: 'border-slate-200 bg-slate-50/80' },
+  { status: 'todo',        title: 'To Do',       className: 'border-border bg-muted/80' },
   { status: 'in_progress', title: 'In progress',  className: 'border-amber-200 bg-amber-50/50' },
   { status: 'done',        title: 'Done',          className: 'border-emerald-200 bg-emerald-50/50' },
 ]
@@ -103,19 +103,19 @@ export default function TasksPage() {
     setDragId(null)
   }
 
-  if (loading) return <AppLayout><div className="text-slate-400 p-8">Cargando tareas...</div></AppLayout>
+  if (loading) return <AppLayout><div className="text-muted-foreground p-8">Cargando tareas...</div></AppLayout>
 
   return (
     <AppLayout>
       <div className="max-w-6xl">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-[#0f1f3d] text-white">
+            <div className="p-2 rounded-lg bg-primary text-primary-foreground">
               <LayoutList size={20} />
             </div>
             <div>
               <h1 className="page-title">Tareas</h1>
-              <p className="text-slate-500 text-sm mt-0.5">Arrastra entre columnas para cambiar estado</p>
+              <p className="text-muted-foreground text-sm mt-0.5">Arrastra entre columnas para cambiar estado</p>
             </div>
           </div>
         </div>
@@ -154,9 +154,9 @@ export default function TasksPage() {
               onDrop={e => onDrop(e, col.status)}
               className={`rounded-xl border-2 border-dashed min-h-[280px] p-3 flex flex-col ${col.className}`}
             >
-              <h2 className="text-xs font-bold uppercase tracking-wide text-slate-500 mb-3 px-1">
+              <h2 className="text-xs font-bold uppercase tracking-wide text-muted-foreground mb-3 px-1">
                 {col.title}
-                <span className="ml-1.5 font-semibold text-slate-400">({byColumn[col.status].length})</span>
+                <span className="ml-1.5 font-semibold text-muted-foreground/80">({byColumn[col.status].length})</span>
               </h2>
               <div className="space-y-2 flex-1">
                 {byColumn[col.status].map(item => (
@@ -165,18 +165,18 @@ export default function TasksPage() {
                     draggable
                     onDragStart={e => onDragStart(e, item.id)}
                     onDragEnd={onDragEnd}
-                    className={`bg-white border border-slate-200 rounded-lg p-3 shadow-sm cursor-grab active:cursor-grabbing hover:border-slate-300 transition-colors group ${
-                      dragId === item.id ? 'opacity-60 ring-2 ring-blue-400 ring-offset-1' : ''
+                    className={`bg-card border border-border rounded-lg p-3 shadow-sm cursor-grab active:cursor-grabbing hover:border-muted-foreground/30 transition-colors group ${
+                      dragId === item.id ? 'opacity-60 ring-2 ring-ring ring-offset-1 ring-offset-background' : ''
                     }`}
                   >
                     <div className="flex gap-2">
-                      <GripVertical size={16} className="text-slate-300 flex-shrink-0 mt-0.5" />
+                      <GripVertical size={16} className="text-muted-foreground/50 flex-shrink-0 mt-0.5" />
                       <div className="min-w-0 flex-1">
-                        <p className="text-sm text-slate-800 leading-snug">{item.text}</p>
-                        <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-slate-400">
+                        <p className="text-sm text-foreground leading-snug">{item.text}</p>
+                        <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
                           {item.client?.name && <span>{item.client.name}</span>}
                           {item.meeting && (
-                            <Link href={`/meetings/${item.meeting.id}`} className="inline-flex items-center gap-0.5 text-blue-600 hover:underline">
+                            <Link href={`/meetings/${item.meeting.id}`} className="inline-flex items-center gap-0.5 text-primary hover:underline">
                               {item.meeting.title}<ExternalLink size={10} className="opacity-70" />
                             </Link>
                           )}
@@ -187,7 +187,7 @@ export default function TasksPage() {
                       </div>
                       <button
                         onClick={() => deleteTask(item.id)}
-                        className="opacity-0 group-hover:opacity-100 text-slate-300 hover:text-red-400 transition-all flex-shrink-0"
+                        className="opacity-0 group-hover:opacity-100 text-muted-foreground/50 hover:text-red-400 transition-all flex-shrink-0"
                       >
                         <Trash2 size={14} />
                       </button>
