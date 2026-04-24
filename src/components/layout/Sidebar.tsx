@@ -1,29 +1,39 @@
-'use client'
-import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
-import ThemeSwitcher from '@/components/theme-switcher'
-import { LayoutDashboard, Users, CalendarDays, Lightbulb, BarChart3, LayoutList, LogOut } from 'lucide-react'
-import { cn } from '@/lib/utils'
+"use client";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
+import ThemeSwitcher from "@/components/theme-switcher";
+import {
+  LayoutDashboard,
+  Users,
+  CalendarDays,
+  Lightbulb,
+  BarChart3,
+  LayoutList,
+  ListChecks,
+  LogOut,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const nav = [
-  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/clients', label: 'Clients', icon: Users },
-  { href: '/meetings', label: 'Meetings', icon: CalendarDays },
-  { href: '/tasks', label: 'Tasks', icon: LayoutList },
-  { href: '/problems', label: 'Problems', icon: Lightbulb },
-  { href: '/reports', label: 'Reports', icon: BarChart3 },
-]
+  { href: "/tasks", label: "Tasks", icon: LayoutList },
+  { href: "/todos", label: "Todos", icon: ListChecks },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/clients", label: "Clients", icon: Users },
+  { href: "/meetings", label: "Meetings", icon: CalendarDays },
+  { href: "/problems", label: "Problems", icon: Lightbulb },
+  { href: "/reports", label: "Reports", icon: BarChart3 },
+];
 
 export default function Sidebar() {
-  const pathname = usePathname()
-  const router = useRouter()
-  const supabase = createClient()
+  const pathname = usePathname();
+  const router = useRouter();
+  const supabase = createClient();
 
   async function handleLogout() {
-    await supabase.auth.signOut()
-    router.push('/login')
-    router.refresh()
+    await supabase.auth.signOut();
+    router.push("/login");
+    router.refresh();
   }
 
   return (
@@ -34,34 +44,43 @@ export default function Sidebar() {
             <span className="text-primary-foreground font-bold text-sm">D</span>
           </div>
           <div>
-            <p className="text-sidebar-foreground font-semibold text-sm leading-none">Workspace</p>
+            <p className="text-sidebar-foreground font-semibold text-sm leading-none">
+              Workspace
+            </p>
             <p className="text-sidebar-foreground/40 text-xs mt-0.5">Dorstep</p>
           </div>
         </div>
       </div>
       <nav className="flex-1 px-3 py-4 space-y-0.5">
         {nav.map(({ href, label, icon: Icon }) => {
-          const active = pathname === href || pathname.startsWith(href + '/')
+          const active = pathname === href || pathname.startsWith(href + "/");
           return (
-            <Link key={href} href={href} className={cn(
-              'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
-              active
-                ? 'bg-sidebar-accent text-sidebar-accent-foreground'
-                : 'text-sidebar-foreground/60 hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground/90'
-            )}>
+            <Link
+              key={href}
+              href={href}
+              className={cn(
+                "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
+                active
+                  ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                  : "text-sidebar-foreground/60 hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground/90",
+              )}
+            >
               <Icon size={16} />
               {label}
             </Link>
-          )
+          );
         })}
       </nav>
       <ThemeSwitcher />
       <div className="px-3 pb-5">
-        <button onClick={handleLogout} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-sidebar-foreground/40 hover:text-sidebar-foreground/70 hover:bg-sidebar-accent/50 transition-colors w-full">
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-sidebar-foreground/40 hover:text-sidebar-foreground/70 hover:bg-sidebar-accent/50 transition-colors w-full"
+        >
           <LogOut size={16} />
           Sign out
         </button>
       </div>
     </aside>
-  )
+  );
 }
