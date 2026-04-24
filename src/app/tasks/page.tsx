@@ -5,7 +5,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react'
 import Link from 'next/link'
 import { LayoutList, GripVertical, ExternalLink, Plus, Trash2 } from 'lucide-react'
 import { format } from 'date-fns'
-import { es } from 'date-fns/locale'
+import { enUS } from 'date-fns/locale'
 import { dbFieldsForStatus, statusFromRow, type TaskStatus } from '@/lib/action-items'
 
 type Row = {
@@ -103,7 +103,7 @@ export default function TasksPage() {
     setDragId(null)
   }
 
-  if (loading) return <AppLayout><div className="text-muted-foreground p-8">Cargando tareas...</div></AppLayout>
+  if (loading) return <AppLayout><div className="text-muted-foreground p-8">Loading tasks...</div></AppLayout>
 
   return (
     <AppLayout>
@@ -114,8 +114,8 @@ export default function TasksPage() {
               <LayoutList size={20} />
             </div>
             <div>
-              <h1 className="page-title">Tareas</h1>
-              <p className="text-muted-foreground text-sm mt-0.5">Arrastra entre columnas para cambiar estado</p>
+              <h1 className="page-title">Tasks</h1>
+              <p className="text-muted-foreground text-sm mt-0.5">Drag between columns to change status</p>
             </div>
           </div>
         </div>
@@ -124,7 +124,7 @@ export default function TasksPage() {
         <div className="flex gap-2 mt-5 mb-6">
           <input
             className="input text-sm flex-1"
-            placeholder="Nueva tarea..."
+            placeholder="New task..."
             value={newText}
             onChange={e => setNewText(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addTask())}
@@ -135,13 +135,13 @@ export default function TasksPage() {
             disabled={adding || !newText.trim()}
             className="btn-primary flex items-center gap-1.5 text-sm py-2 px-3 whitespace-nowrap disabled:opacity-50"
           >
-            <Plus size={14} />Agregar
+            <Plus size={14} />Add
           </button>
         </div>
 
         {loadError && (
           <div className="mb-6 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 text-sm px-4 py-3">
-            <p className="font-medium">No se pudieron cargar las tareas</p>
+            <p className="font-medium">Could not load tasks</p>
             <p className="mt-1 text-amber-800/90">{loadError}</p>
           </div>
         )}
@@ -181,7 +181,7 @@ export default function TasksPage() {
                             </Link>
                           )}
                           {item.meeting?.date && (
-                            <span>· {format(new Date(item.meeting.date), 'd MMM yyyy', { locale: es })}</span>
+                            <span>· {format(new Date(item.meeting.date), 'd MMM yyyy', { locale: enUS })}</span>
                           )}
                         </div>
                       </div>

@@ -45,24 +45,24 @@
 }
 
 [data-theme='neon'] {
-  --background: #0a0a12;
-  --foreground: #e8e8f2;
-  --muted: #12121f;
-  --muted-foreground: #9898b0;
-  --border: #2a2a42;
-  --card: #11111a;
-  --card-foreground: #e8e8f2;
-  --primary: #00c8e8;
-  --primary-hover: #00a8c4;
-  --primary-foreground: #0a0a12;
-  --secondary: #12121f;
-  --secondary-foreground: #e8e8f2;
-  --ring: #00c8e8;
-  --sidebar: #050508;
-  --sidebar-foreground: #f0f0ff;
-  --sidebar-border: rgba(0, 200, 232, 0.15);
-  --sidebar-accent: rgba(0, 200, 232, 0.12);
-  --sidebar-accent-foreground: #f0f0ff;
+  --background: #020208;
+  --foreground: #f4f7ff;
+  --muted: #0a0a14;
+  --muted-foreground: #9aa8e8;
+  --border: #4a4a8a;
+  --card: #06060f;
+  --card-foreground: #f8f9ff;
+  --primary: #00fff0;
+  --primary-hover: #66fff8;
+  --primary-foreground: #020203;
+  --secondary: #100818;
+  --secondary-foreground: #ffd6fc;
+  --ring: #ff2eea;
+  --sidebar: #030106;
+  --sidebar-foreground: #eef6ff;
+  --sidebar-border: rgba(0, 255, 240, 0.55);
+  --sidebar-accent: rgba(255, 46, 234, 0.22);
+  --sidebar-accent-foreground: #ffffff;
 }
 
 @layer base {
@@ -99,4 +99,75 @@
   .section-title {
     @apply text-sm font-semibold text-muted-foreground uppercase tracking-wide;
   }
+}
+
+/* Y2K / chrome neon: glows and high contrast (neon theme only) */
+[data-theme='neon'] body {
+  background-color: var(--background);
+  background-image:
+    radial-gradient(ellipse 100% 70% at 50% -30%, rgba(0, 255, 240, 0.14), transparent 55%),
+    radial-gradient(ellipse 60% 50% at 100% 20%, rgba(255, 46, 234, 0.1), transparent 50%),
+    radial-gradient(ellipse 50% 40% at 0% 80%, rgba(0, 255, 240, 0.06), transparent 45%);
+}
+
+[data-theme='neon'] .card {
+  border-color: rgba(0, 255, 240, 0.45);
+  box-shadow:
+    0 0 0 1px rgba(255, 46, 234, 0.2),
+    0 0 18px rgba(0, 255, 240, 0.18),
+    0 0 36px rgba(255, 46, 234, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+[data-theme='neon'] .btn-primary {
+  border: 1px solid rgba(255, 46, 234, 0.5);
+  box-shadow:
+    0 0 14px rgba(0, 255, 240, 0.55),
+    0 0 28px rgba(0, 255, 240, 0.25),
+    0 0 8px rgba(255, 46, 234, 0.45);
+}
+
+[data-theme='neon'] .btn-primary:hover {
+  box-shadow:
+    0 0 20px rgba(0, 255, 240, 0.75),
+    0 0 40px rgba(0, 255, 240, 0.35),
+    0 0 14px rgba(255, 46, 234, 0.55);
+}
+
+[data-theme='neon'] .btn-secondary {
+  border-color: rgba(0, 255, 240, 0.35);
+  box-shadow: 0 0 10px rgba(0, 255, 240, 0.12), inset 0 0 12px rgba(255, 46, 234, 0.04);
+}
+
+[data-theme='neon'] .btn-secondary:hover {
+  border-color: rgba(255, 46, 234, 0.45);
+  box-shadow: 0 0 16px rgba(255, 46, 234, 0.2), 0 0 8px rgba(0, 255, 240, 0.15);
+}
+
+[data-theme='neon'] .input {
+  border-color: rgba(0, 255, 240, 0.35);
+  box-shadow: inset 0 0 20px rgba(0, 255, 240, 0.04);
+}
+
+[data-theme='neon'] .input:focus {
+  border-color: rgba(255, 46, 234, 0.7);
+  box-shadow:
+    0 0 0 2px rgba(0, 255, 240, 0.35),
+    0 0 16px rgba(255, 46, 234, 0.35),
+    0 0 24px rgba(0, 255, 240, 0.2);
+}
+
+[data-theme='neon'] .page-title {
+  color: var(--foreground);
+  text-shadow:
+    0 0 12px rgba(0, 255, 240, 0.45),
+    0 0 28px rgba(255, 46, 234, 0.35),
+    0 0 48px rgba(0, 255, 240, 0.15);
+}
+
+[data-theme='neon'] aside {
+  box-shadow:
+    4px 0 32px rgba(0, 255, 240, 0.12),
+    2px 0 0 rgba(0, 255, 240, 0.35),
+    inset -1px 0 0 rgba(255, 46, 234, 0.25);
 }

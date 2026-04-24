@@ -30,7 +30,7 @@ export default function EditClientPage({ params }: { params: Promise<{ id: strin
   }
 
   async function handleDelete() {
-    if (!confirm('¿Eliminar este cliente?')) return
+    if (!confirm('Delete this client?')) return
     await supabase.from('clients').delete().eq('id', id)
     router.push('/clients')
   }
@@ -39,23 +39,23 @@ export default function EditClientPage({ params }: { params: Promise<{ id: strin
     <AppLayout>
       <div className="max-w-2xl">
         <div className="flex items-center gap-3 mb-8">
-          <Link href={`/clients/${id}`} className="btn-secondary flex items-center gap-2"><ArrowLeft size={16} />Volver</Link>
-          <h1 className="page-title">Editar cliente</h1>
+          <Link href={`/clients/${id}`} className="btn-secondary flex items-center gap-2"><ArrowLeft size={16} />Back</Link>
+          <h1 className="page-title">Edit client</h1>
         </div>
         <form onSubmit={handleSubmit} className="card space-y-5">
           <div className="grid grid-cols-2 gap-4">
-            <div className="col-span-2"><label className="label">Nombre *</label><input className="input" required value={form.name} onChange={e => set('name', e.target.value)} /></div>
-            <div><label className="label">Empresa</label><input className="input" value={form.company} onChange={e => set('company', e.target.value)} /></div>
-            <div><label className="label">Correo</label><input className="input" type="email" value={form.email} onChange={e => set('email', e.target.value)} /></div>
-            <div><label className="label">Teléfono</label><input className="input" value={form.phone} onChange={e => set('phone', e.target.value)} /></div>
+            <div className="col-span-2"><label className="label">Name *</label><input className="input" required value={form.name} onChange={e => set('name', e.target.value)} /></div>
+            <div><label className="label">Company</label><input className="input" value={form.company} onChange={e => set('company', e.target.value)} /></div>
+            <div><label className="label">Email</label><input className="input" type="email" value={form.email} onChange={e => set('email', e.target.value)} /></div>
+            <div><label className="label">Phone</label><input className="input" value={form.phone} onChange={e => set('phone', e.target.value)} /></div>
             <div><label className="label">Tags</label><input className="input" value={form.tags} onChange={e => set('tags', e.target.value)} /></div>
-            <div className="col-span-2"><label className="label">Notas</label><textarea className="input min-h-[100px] resize-none" value={form.notes} onChange={e => set('notes', e.target.value)} /></div>
+            <div className="col-span-2"><label className="label">Notes</label><textarea className="input min-h-[100px] resize-none" value={form.notes} onChange={e => set('notes', e.target.value)} /></div>
           </div>
           <div className="flex justify-between pt-2 border-t border-border/60">
-            <button type="button" onClick={handleDelete} className="btn-danger flex items-center gap-2"><Trash2 size={15} />Eliminar</button>
+            <button type="button" onClick={handleDelete} className="btn-danger flex items-center gap-2"><Trash2 size={15} />Delete</button>
             <div className="flex gap-3">
-              <Link href={`/clients/${id}`} className="btn-secondary">Cancelar</Link>
-              <button type="submit" className="btn-primary" disabled={loading}>{loading ? 'Guardando...' : 'Guardar'}</button>
+              <Link href={`/clients/${id}`} className="btn-secondary">Cancel</Link>
+              <button type="submit" className="btn-primary" disabled={loading}>{loading ? 'Saving...' : 'Save'}</button>
             </div>
           </div>
         </form>

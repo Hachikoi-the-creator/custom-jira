@@ -8,11 +8,11 @@ import { cn } from '@/lib/utils'
 
 const nav = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/clients', label: 'Clientes', icon: Users },
-  { href: '/meetings', label: 'Reuniones', icon: CalendarDays },
-  { href: '/tasks', label: 'Tareas', icon: LayoutList },
-  { href: '/problems', label: 'Problemas', icon: Lightbulb },
-  { href: '/reports', label: 'Reportes', icon: BarChart3 },
+  { href: '/clients', label: 'Clients', icon: Users },
+  { href: '/meetings', label: 'Meetings', icon: CalendarDays },
+  { href: '/tasks', label: 'Tasks', icon: LayoutList },
+  { href: '/problems', label: 'Problems', icon: Lightbulb },
+  { href: '/reports', label: 'Reports', icon: BarChart3 },
 ]
 
 export default function Sidebar() {
@@ -59,7 +59,7 @@ export default function Sidebar() {
       <div className="px-3 pb-5">
         <button onClick={handleLogout} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-sidebar-foreground/40 hover:text-sidebar-foreground/70 hover:bg-sidebar-accent/50 transition-colors w-full">
           <LogOut size={16} />
-          Cerrar sesión
+          Sign out
         </button>
       </div>
     </aside>

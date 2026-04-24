@@ -25,7 +25,7 @@ export default function ThemeSwitcher({ variant = 'sidebar' }: ThemeSwitcherProp
           surface ? 'text-muted-foreground' : 'text-sidebar-foreground/40',
         )}
       >
-        Tema
+        Theme
       </p>
       <div
         className={cn(

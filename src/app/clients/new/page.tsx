@@ -29,21 +29,21 @@ export default function NewClientPage() {
     <AppLayout>
       <div className="max-w-2xl">
         <div className="flex items-center gap-3 mb-8">
-          <Link href="/clients" className="btn-secondary flex items-center gap-2"><ArrowLeft size={16} />Volver</Link>
-          <h1 className="page-title">Nuevo cliente</h1>
+          <Link href="/clients" className="btn-secondary flex items-center gap-2"><ArrowLeft size={16} />Back</Link>
+          <h1 className="page-title">New client</h1>
         </div>
         <form onSubmit={handleSubmit} className="card space-y-5">
           <div className="grid grid-cols-2 gap-4">
-            <div className="col-span-2"><label className="label">Nombre *</label><input className="input" required value={form.name} onChange={e => set('name', e.target.value)} placeholder="Nombre del contacto" /></div>
-            <div><label className="label">Empresa</label><input className="input" value={form.company} onChange={e => set('company', e.target.value)} placeholder="Empresa" /></div>
-            <div><label className="label">Correo</label><input className="input" type="email" value={form.email} onChange={e => set('email', e.target.value)} placeholder="correo@empresa.com" /></div>
-            <div><label className="label">Teléfono</label><input className="input" value={form.phone} onChange={e => set('phone', e.target.value)} placeholder="+52 55 0000 0000" /></div>
-            <div><label className="label">Tags (separados por coma)</label><input className="input" value={form.tags} onChange={e => set('tags', e.target.value)} placeholder="BMW, GWM" /></div>
-            <div className="col-span-2"><label className="label">Notas</label><textarea className="input min-h-[100px] resize-none" value={form.notes} onChange={e => set('notes', e.target.value)} placeholder="Información relevante..." /></div>
+            <div className="col-span-2"><label className="label">Name *</label><input className="input" required value={form.name} onChange={e => set('name', e.target.value)} placeholder="Contact name" /></div>
+            <div><label className="label">Company</label><input className="input" value={form.company} onChange={e => set('company', e.target.value)} placeholder="Company" /></div>
+            <div><label className="label">Email</label><input className="input" type="email" value={form.email} onChange={e => set('email', e.target.value)} placeholder="name@company.com" /></div>
+            <div><label className="label">Phone</label><input className="input" value={form.phone} onChange={e => set('phone', e.target.value)} placeholder="+1 555 000 0000" /></div>
+            <div><label className="label">Tags (comma-separated)</label><input className="input" value={form.tags} onChange={e => set('tags', e.target.value)} placeholder="BMW, GWM" /></div>
+            <div className="col-span-2"><label className="label">Notes</label><textarea className="input min-h-[100px] resize-none" value={form.notes} onChange={e => set('notes', e.target.value)} placeholder="Relevant details..." /></div>
           </div>
           <div className="flex justify-end gap-3 pt-2 border-t border-border/60">
-            <Link href="/clients" className="btn-secondary">Cancelar</Link>
-            <button type="submit" className="btn-primary" disabled={loading}>{loading ? 'Guardando...' : 'Crear cliente'}</button>
+            <Link href="/clients" className="btn-secondary">Cancel</Link>
+            <button type="submit" className="btn-primary" disabled={loading}>{loading ? 'Saving...' : 'Create client'}</button>
           </div>
         </form>
       </div>

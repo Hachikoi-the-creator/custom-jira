@@ -11,16 +11,16 @@ export default async function ClientsPage() {
       <div className="max-w-4xl">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="page-title">Clientes</h1>
-            <p className="text-muted-foreground text-sm mt-1">{clients?.length ?? 0} clientes registrados</p>
+            <h1 className="page-title">Clients</h1>
+            <p className="text-muted-foreground text-sm mt-1">{clients?.length ?? 0} registered clients</p>
           </div>
-          <Link href="/clients/new" className="btn-primary flex items-center gap-2"><Plus size={16} />Nuevo cliente</Link>
+          <Link href="/clients/new" className="btn-primary flex items-center gap-2"><Plus size={16} />New client</Link>
         </div>
         {!clients?.length ? (
           <div className="card text-center py-16">
             <Building2 size={40} className="text-muted-foreground/40 mx-auto mb-3" />
-            <p className="text-muted-foreground font-medium">Sin clientes aún</p>
-            <Link href="/clients/new" className="btn-primary inline-flex items-center gap-2 mt-4"><Plus size={16} />Nuevo cliente</Link>
+            <p className="text-muted-foreground font-medium">No clients yet</p>
+            <Link href="/clients/new" className="btn-primary inline-flex items-center gap-2 mt-4"><Plus size={16} />New client</Link>
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-3">

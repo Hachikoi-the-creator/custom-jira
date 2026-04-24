@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { Plus, BarChart3, Copy, Check, Trash2, Share2 } from 'lucide-react'
 import { format } from 'date-fns'
-import { es } from 'date-fns/locale'
+import { enUS } from 'date-fns/locale'
 
 function buildReport(csvText: string, title: string, period: string): string {
   // ── CSV PARSE ──────────────────────────────────────────────────────────────
@@ -38,7 +38,7 @@ function buildReport(csvText: string, title: string, period: string): string {
   // ── DATE PARSE ─────────────────────────────────────────────────────────────
   // Format: "03/Feb/26 1:16 PM"
   const MMAP: Record<string, number> = { Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11 }
-  const MSHORT: Record<number, string> = { 0:'Ene',1:'Feb',2:'Mar',3:'Abr',4:'May',5:'Jun',6:'Jul',7:'Ago',8:'Sep',9:'Oct',10:'Nov',11:'Dic' }
+  const MSHORT: Record<number, string> = { 0:'Jan',1:'Feb',2:'Mar',3:'Apr',4:'May',5:'Jun',6:'Jul',7:'Aug',8:'Sep',9:'Oct',10:'Nov',11:'Dec' }
   function parseCreated(s: string): { month: number; week: number } | null {
     const m = s.match(/^(\d{1,2})\/([A-Za-z]{3})\/\d{2}\s/)
     if (!m) return null
@@ -49,21 +49,21 @@ function buildReport(csvText: string, title: string, period: string): string {
 
   // ── FIELD DETECTION ────────────────────────────────────────────────────────
   const createdField = headers.find(h => /created/i.test(h)) ?? 'Created'
-  const agField = headers.find(h => /agencia/i.test(h)) ?? 'Custom field (Agencia que reporta)'
-  const urgField = headers.find(h => /urgencia/i.test(h)) ?? 'Custom field (Nivel de urgencia)'
+  const agField = headers.find(h => /agencia|agency/i.test(h)) ?? 'Custom field (Agencia que reporta)'
+  const urgField = headers.find(h => /urgencia|urgency/i.test(h)) ?? 'Custom field (Nivel de urgencia)'
 
   // ── CLASSIFY TIPO DE ERROR ─────────────────────────────────────────────────
   function classifyTipo(row: Record<string, string>): string {
     const up = ((row['Summary'] ?? '') + ' ' + (row['Description'] ?? '')).toUpperCase()
-    if (/ENTRENAMIENTO|TRAINING/.test(up)) return 'Entrenamiento IA'
-    if (/RESET|RESETAR/.test(up)) return 'Reset / Act. IA'
-    if (/CAMPA[ÑN]|OFERTA|PROMO|BONO/.test(up)) return 'Campaña / Oferta'
-    if (/CITA|AGENDA|BPRO/.test(up)) return 'Error en Citas'
-    if (/LLAMADA|VOZ|TRANSFER/.test(up)) return 'Error Llamadas'
-    if (/WHATSAPP|MENSAJ|PLANTILLA/.test(up)) return 'Error WhatsApp'
-    if (/DIRECCI[OÓ]N|HORARIO|PRECIO|DA MAL/.test(up)) return 'Error Información'
-    if (/LEAD|CRM|SEEKOP|SYONET/.test(up) && !/CITA/.test(up)) return 'Error Leads / CRM'
-    return 'Otro'
+    if (/ENTRENAMIENTO|TRAINING/.test(up)) return 'AI training'
+    if (/RESET|RESETAR/.test(up)) return 'Reset / AI update'
+    if (/CAMPA[ÑN]|OFERTA|PROMO|BONO/.test(up)) return 'Campaign / offer'
+    if (/CITA|AGENDA|BPRO/.test(up)) return 'Appointments error'
+    if (/LLAMADA|VOZ|TRANSFER/.test(up)) return 'Calls error'
+    if (/WHATSAPP|MENSAJ|PLANTILLA/.test(up)) return 'WhatsApp error'
+    if (/DIRECCI[OÓ]N|HORARIO|PRECIO|DA MAL/.test(up)) return 'Information error'
+    if (/LEAD|CRM|SEEKOP|SYONET/.test(up) && !/CITA/.test(up)) return 'Leads / CRM error'
+    return 'Other'
   }
   rows.forEach(r => {
     r['_tipo'] = classifyTipo(r)
@@ -98,7 +98,7 @@ function buildReport(csvText: string, title: string, period: string): string {
   const critTotal = critM0 + critM1
 
   const agMap: Record<string, number> = {}
-  rows.forEach(r => { const ag = r[agField]?.trim() || 'Sin agencia'; agMap[ag] = (agMap[ag] ?? 0) + 1 })
+  rows.forEach(r => { const ag = r[agField]?.trim() || 'No agency'; agMap[ag] = (agMap[ag] ?? 0) + 1 })
   const topAgs = Object.entries(agMap).sort((a, b) => b[1] - a[1])
   const topAgency = topAgs[0]?.[0] ?? 'N/A'
   const topAgCount = topAgs[0]?.[1] ?? 0
@@ -111,13 +111,13 @@ function buildReport(csvText: string, title: string, period: string): string {
   const topTipoCount = topTipo?.[1] ?? 0
   const topTipoPct = total ? Math.round((topTipoCount / total) * 100) : 0
 
-  const waCount = tipoMap['Error WhatsApp'] ?? 0
+  const waCount = tipoMap['WhatsApp error'] ?? 0
   const waPct = total ? Math.round((waCount / total) * 100) : 0
-  const waAlert = waPct >= 15 ? ` ⚠️ WhatsApp representa el ${waPct}% de los tickets.` : ''
+  const waAlert = waPct >= 15 ? ` ⚠️ WhatsApp accounts for ${waPct}% of tickets.` : ''
 
   // ── CHART DATA ─────────────────────────────────────────────────────────────
-  const TIPO_ORDER = ['Error en Citas','Entrenamiento IA','Campaña / Oferta','Error Leads / CRM',
-    'Error WhatsApp','Error Información','Reset / Act. IA','Error Llamadas','Otro']
+  const TIPO_ORDER = ['Appointments error','AI training','Campaign / offer','Leads / CRM error',
+    'WhatsApp error','Information error','Reset / AI update','Calls error','Other']
 
   function weekCounts(arr: Record<string, string>[]): number[] {
     const c = [0,0,0,0]
@@ -134,16 +134,16 @@ function buildReport(csvText: string, title: string, period: string): string {
   }
   const top8 = topAgs.slice(0, 8).map(e => e[0])
   function agCounts(arr: Record<string, string>[]): number[] {
-    return top8.map(ag => arr.filter(r => (r[agField]?.trim() || 'Sin agencia') === ag).length)
+    return top8.map(ag => arr.filter(r => (r[agField]?.trim() || 'No agency') === ag).length)
   }
 
-  const jWL = JSON.stringify(['Sem 1','Sem 2','Sem 3','Sem 4'])
+  const jWL = JSON.stringify(['Week 1','Week 2','Week 3','Week 4'])
   const jW0 = JSON.stringify(weekCounts(rowsM0))
   const jW1 = JSON.stringify(weekCounts(rowsM1))
   const jTL = JSON.stringify(TIPO_ORDER)
   const jT0 = JSON.stringify(tipoCounts(rowsM0))
   const jT1 = JSON.stringify(tipoCounts(rowsM1))
-  const jSL = JSON.stringify(['Done','Cancelado','Pendiente / Otro'])
+  const jSL = JSON.stringify(['Done','Cancelled','Pending / other'])
   const jS0 = JSON.stringify(statusCounts(rowsM0))
   const jS1 = JSON.stringify(statusCounts(rowsM1))
   const jAL = JSON.stringify(top8)
@@ -157,26 +157,26 @@ function buildReport(csvText: string, title: string, period: string): string {
 
   const kpis = [
     { lbl:'Total tickets', c:'#1a56db', val:String(total), sm:false,
-      sub: two ? dot('#1a56db',nm0,totalM0)+dot('#0d9488',nm1,totalM1) : 'Período completo' },
-    { lbl:'Tasa de resolución', c:'#10b981', val:`${resRate}%`, sm:false,
-      sub: two ? dot('#1a56db',nm0,`${resM0}%`)+dot('#0d9488',nm1,`${resM1}%`) : `${done} tickets cerrados` },
-    { lbl:'Avg resolución', c:'#0d9488', val:'—', sm:false,
-      sub:'<span style="font-size:11px;color:#94a3b8">Sin datos de resolución</span>' },
-    { lbl:'Tickets críticos', c:'#ef4444', val:String(critTotal), sm:false,
-      sub: two ? dot('#1a56db',nm0,critM0)+dot('#0d9488',nm1,critM1) : 'Nivel crítico' },
-    { lbl:'SLA cumplido', c:'#10b981', val:`${resRate}%`, sm:false,
-      sub: two ? dot('#1a56db',nm0,`${resM0}%`)+dot('#0d9488',nm1,`${resM1}%`) : 'Del total' },
-    { lbl:'Mediana resolución', c:'#1a56db', val:'—', sm:false,
-      sub:'<span style="font-size:11px;color:#94a3b8">Sin datos de resolución</span>' },
-    { lbl:'Error más frecuente', c:'#f59e0b', val:topTipoName, sm:true,
+      sub: two ? dot('#1a56db',nm0,totalM0)+dot('#0d9488',nm1,totalM1) : 'Full period' },
+    { lbl:'Resolution rate', c:'#10b981', val:`${resRate}%`, sm:false,
+      sub: two ? dot('#1a56db',nm0,`${resM0}%`)+dot('#0d9488',nm1,`${resM1}%`) : `${done} tickets closed` },
+    { lbl:'Avg resolution', c:'#0d9488', val:'—', sm:false,
+      sub:'<span style="font-size:11px;color:#94a3b8">No resolution data</span>' },
+    { lbl:'Critical tickets', c:'#ef4444', val:String(critTotal), sm:false,
+      sub: two ? dot('#1a56db',nm0,critM0)+dot('#0d9488',nm1,critM1) : 'Critical level' },
+    { lbl:'SLA met', c:'#10b981', val:`${resRate}%`, sm:false,
+      sub: two ? dot('#1a56db',nm0,`${resM0}%`)+dot('#0d9488',nm1,`${resM1}%`) : 'Of total' },
+    { lbl:'Median resolution', c:'#1a56db', val:'—', sm:false,
+      sub:'<span style="font-size:11px;color:#94a3b8">No resolution data</span>' },
+    { lbl:'Most common error', c:'#f59e0b', val:topTipoName, sm:true,
       sub:`<span style="font-size:11px;color:#94a3b8">${topTipoCount} tickets · ${topTipoPct}%</span>` },
-    { lbl:'Agencia con más tickets', c:'#0f1f3d', val:topAgency, sm:true,
+    { lbl:'Agency with most tickets', c:'#0f1f3d', val:topAgency, sm:true,
       sub:`<span style="font-size:11px;color:#94a3b8">${topAgCount} tickets</span>` },
   ]
 
-  const insight = `📌 El período tiene <strong>${total} tickets</strong> en <strong>${activeAgs} agencias</strong>. El problema más frecuente fue <strong>${topTipoName}</strong> (${topTipoCount} tickets, ${topTipoPct}%).${waAlert}`
-  const genDate = new Date().toLocaleDateString('es-MX', { year:'numeric', month:'long', day:'numeric' })
-  const SUBTITLE = 'Mesa de Ayuda — Grupo Continental · Plataforma de Agentes IA Dorstep'
+  const insight = `📌 The period has <strong>${total} tickets</strong> across <strong>${activeAgs} agencies</strong>. The most common issue was <strong>${topTipoName}</strong> (${topTipoCount} tickets, ${topTipoPct}%).${waAlert}`
+  const genDate = new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' })
+  const SUBTITLE = 'Help desk — Grupo Continental · Dorstep AI agent platform'
 
   const badgesHTML = two
     ? `<span class="bdg bdg0">${nm0} · ${totalM0} tickets</span><span class="bdg bdg1">${nm1} · ${totalM1} tickets</span>`
@@ -188,24 +188,24 @@ function buildReport(csvText: string, title: string, period: string): string {
 
   const comparativeSection = two ? `
   <div class="sec">
-    <h2>Análisis comparativo ${nm0} vs ${nm1}</h2>
+    <h2>Comparative analysis ${nm0} vs ${nm1}</h2>
     <div class="legend">
       <div class="li"><div class="ld" style="background:#1a56db"></div>${nm0}</div>
       <div class="li"><div class="ld" style="background:#0d9488"></div>${nm1}</div>
     </div>
     <div class="g2" style="margin-bottom:16px">
       <div>
-        <div class="chart-lbl">Evolución semanal de tickets creados</div>
+        <div class="chart-lbl">Weekly new tickets trend</div>
         <div class="cw" style="height:200px"><canvas id="weekChart"></canvas></div>
       </div>
       <div>
-        <div class="chart-lbl">Estado de tickets</div>
+        <div class="chart-lbl">Ticket status</div>
         <div class="cw" style="height:200px"><canvas id="statusChart"></canvas></div>
       </div>
     </div>
-    <div class="chart-lbl">Tickets por tipo de error — comparativo</div>
+    <div class="chart-lbl">Tickets by error type — comparison</div>
     <div class="cw" style="height:230px;margin-bottom:20px"><canvas id="tipoChart"></canvas></div>
-    <div class="chart-lbl">Tickets por agencia — top 8</div>
+    <div class="chart-lbl">Tickets by agency — top 8</div>
     <div class="cw" style="height:230px"><canvas id="agChart"></canvas></div>
   </div>` : ''
 
@@ -249,7 +249,7 @@ new Chart(document.getElementById('agChart'), {
 });` : ''
 
   return `<!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${title}</title>
@@ -300,9 +300,9 @@ body{font-family:'DM Sans',sans-serif;background:#f8fafc;color:#1e293b;font-size
       <div>${badgesHTML}</div>
     </div>
     <div class="hdr-r">
-      <div class="dt">Generado el ${genDate}</div>
+      <div class="dt">Generated on ${genDate}</div>
       <div class="tot">${total}</div>
-      <div class="tot-l">tickets totales</div>
+      <div class="tot-l">total tickets</div>
     </div>
   </div>
 </div>
@@ -312,7 +312,7 @@ body{font-family:'DM Sans',sans-serif;background:#f8fafc;color:#1e293b;font-size
   ${comparativeSection}
   <div class="footer">
     <span>${title}${period ? ` · ${period}` : ''}</span>
-    <span>${total} tickets · ${activeAgs} agencias</span>
+    <span>${total} tickets · ${activeAgs} agencies</span>
   </div>
 </div>
 <script>
@@ -359,7 +359,7 @@ export default function ReportsPage() {
   }
 
   async function deleteReport(id: string) {
-    if (!confirm('¿Eliminar?')) return
+    if (!confirm('Delete this report?')) return
     await supabase.from('reports').delete().eq('id', id)
     setReports(prev => prev.filter(r => r.id !== id))
   }
@@ -379,27 +379,27 @@ export default function ReportsPage() {
     <AppLayout>
       <div className="max-w-4xl">
         <div className="flex items-center justify-between mb-8">
-          <div><h1 className="page-title">Reportes</h1><p className="text-muted-foreground text-sm mt-1">Genera y comparte reportes con tus clientes</p></div>
-          <button onClick={() => setShowForm(!showForm)} className="btn-primary flex items-center gap-2"><Plus size={16} />Generar reporte</button>
+          <div><h1 className="page-title">Reports</h1><p className="text-muted-foreground text-sm mt-1">Build and share reports with your clients</p></div>
+          <button onClick={() => setShowForm(!showForm)} className="btn-primary flex items-center gap-2"><Plus size={16} />Generate report</button>
         </div>
         {showForm && (
           <form onSubmit={handleCreate} className="card mb-6 space-y-4 border-primary/25 bg-primary/5">
-            <h2 className="font-semibold text-foreground">Nuevo reporte</h2>
+            <h2 className="font-semibold text-foreground">New report</h2>
             <div className="grid grid-cols-2 gap-4">
-              <div className="col-span-2"><label className="label">Título *</label><input className="input" required value={form.title} onChange={e => setForm(p => ({ ...p, title: e.target.value }))} placeholder="Reporte Mensual Grupo Continental" /></div>
-              <div><label className="label">Cliente</label><select className="input" value={form.client_id} onChange={e => setForm(p => ({ ...p, client_id: e.target.value }))}><option value="">Sin cliente</option>{clients.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}</select></div>
-              <div><label className="label">Período</label><input className="input" value={form.period} onChange={e => setForm(p => ({ ...p, period: e.target.value }))} placeholder="Febrero – Marzo 2026" /></div>
-              <div className="col-span-2"><label className="label">CSV de Jira *</label><input ref={fileRef} type="file" accept=".csv,.xlsx" required className="block w-full text-sm text-muted-foreground file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary-hover file:cursor-pointer" /></div>
+              <div className="col-span-2"><label className="label">Title *</label><input className="input" required value={form.title} onChange={e => setForm(p => ({ ...p, title: e.target.value }))} placeholder="Monthly report — Grupo Continental" /></div>
+              <div><label className="label">Client</label><select className="input" value={form.client_id} onChange={e => setForm(p => ({ ...p, client_id: e.target.value }))}><option value="">No client</option>{clients.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}</select></div>
+              <div><label className="label">Period</label><input className="input" value={form.period} onChange={e => setForm(p => ({ ...p, period: e.target.value }))} placeholder="February – March 2026" /></div>
+              <div className="col-span-2"><label className="label">Jira CSV *</label><input ref={fileRef} type="file" accept=".csv,.xlsx" required className="block w-full text-sm text-muted-foreground file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary-hover file:cursor-pointer" /></div>
             </div>
             <div className="flex justify-end gap-3 pt-2 border-t border-border/60">
-              <button type="button" onClick={() => setShowForm(false)} className="btn-secondary">Cancelar</button>
-              <button type="submit" className="btn-primary" disabled={creating}>{creating ? 'Generando...' : 'Generar reporte'}</button>
+              <button type="button" onClick={() => setShowForm(false)} className="btn-secondary">Cancel</button>
+              <button type="submit" className="btn-primary" disabled={creating}>{creating ? 'Generating...' : 'Generate report'}</button>
             </div>
           </form>
         )}
-        {loading ? <div className="text-muted-foreground text-sm">Cargando...</div>
+        {loading ? <div className="text-muted-foreground text-sm">Loading...</div>
         : !reports.length ? (
-          <div className="card text-center py-16"><BarChart3 size={40} className="text-muted-foreground/40 mx-auto mb-3" /><p className="text-muted-foreground font-medium">Sin reportes</p><p className="text-muted-foreground/80 text-sm mt-1">Sube un CSV de Jira para generar un reporte</p></div>
+          <div className="card text-center py-16"><BarChart3 size={40} className="text-muted-foreground/40 mx-auto mb-3" /><p className="text-muted-foreground font-medium">No reports yet</p><p className="text-muted-foreground/80 text-sm mt-1">Upload a Jira CSV to generate a report</p></div>
         ) : (
           <div className="space-y-3">
             {reports.map((r: any) => (
@@ -409,16 +409,16 @@ export default function ReportsPage() {
                   <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
                     {r.client && <span>{r.client.name}</span>}
                     {r.period && <span>{r.period}</span>}
-                    <span>{format(new Date(r.created_at), 'd MMM yyyy', { locale: es })}</span>
+                    <span>{format(new Date(r.created_at), 'd MMM yyyy', { locale: enUS })}</span>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <button onClick={() => downloadReport(r)} className="btn-secondary text-xs">Descargar</button>
+                  <button onClick={() => downloadReport(r)} className="btn-secondary text-xs">Download</button>
                   <button onClick={() => copyLink(r.share_token)} className="btn-secondary text-xs flex items-center gap-1.5">
                     {copied === r.share_token ? <Check size={13} className="text-green-500" /> : <Copy size={13} />}
-                    {copied === r.share_token ? 'Copiado' : 'Copiar link'}
+                    {copied === r.share_token ? 'Copied' : 'Copy link'}
                   </button>
-                  <Link href={`/r/${r.share_token}`} target="_blank" className="btn-secondary text-xs flex items-center gap-1.5"><Share2 size={13} />Ver</Link>
+                  <Link href={`/r/${r.share_token}`} target="_blank" className="btn-secondary text-xs flex items-center gap-1.5"><Share2 size={13} />Open</Link>
                   <button onClick={() => deleteReport(r.id)} className="text-muted-foreground/50 hover:text-red-400 transition-colors p-1"><Trash2 size={15} /></button>
                 </div>
               </div>

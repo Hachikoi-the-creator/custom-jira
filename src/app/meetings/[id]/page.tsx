@@ -6,7 +6,7 @@ import { useState, useEffect, use } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, Plus, Trash2, Check, Building2, Calendar, Users } from 'lucide-react'
 import { format } from 'date-fns'
-import { es } from 'date-fns/locale'
+import { enUS } from 'date-fns/locale'
 
 export default function MeetingDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params)
@@ -53,13 +53,13 @@ export default function MeetingDetailPage({ params }: { params: Promise<{ id: st
   }
 
   async function deleteMeeting() {
-    if (!confirm('¿Eliminar esta reunión?')) return
+    if (!confirm('Delete this meeting?')) return
     await supabase.from('meetings').delete().eq('id', id)
     router.push('/meetings')
   }
 
-  if (loading) return <AppLayout><div className="text-muted-foreground p-8">Cargando...</div></AppLayout>
-  if (!meeting) return <AppLayout><div className="text-muted-foreground p-8">No encontrada</div></AppLayout>
+  if (loading) return <AppLayout><div className="text-muted-foreground p-8">Loading...</div></AppLayout>
+  if (!meeting) return <AppLayout><div className="text-muted-foreground p-8">Not found</div></AppLayout>
 
   const done = actionItems.filter(i => i.done).length
   const total = actionItems.length
@@ -69,35 +69,35 @@ export default function MeetingDetailPage({ params }: { params: Promise<{ id: st
       <div className="max-w-3xl">
         <div className="flex items-start justify-between mb-8">
           <div className="flex items-center gap-3">
-            <Link href="/meetings" className="btn-secondary flex items-center gap-2"><ArrowLeft size={16} />Reuniones</Link>
+            <Link href="/meetings" className="btn-secondary flex items-center gap-2"><ArrowLeft size={16} />Meetings</Link>
             <div>
               <h1 className="page-title">{meeting.title}</h1>
               <div className="flex items-center gap-3 mt-1 text-sm text-muted-foreground">
-                <span className="flex items-center gap-1"><Calendar size={13} />{format(new Date(meeting.date), 'd MMMM yyyy', { locale: es })}</span>
+                <span className="flex items-center gap-1"><Calendar size={13} />{format(new Date(meeting.date), 'd MMMM yyyy', { locale: enUS })}</span>
                 {meeting.client && <Link href={`/clients/${meeting.client.id}`} className="flex items-center gap-1 hover:text-primary"><Building2 size={13} />{meeting.client.name}</Link>}
                 {meeting.attendees && <span className="flex items-center gap-1"><Users size={13} />{meeting.attendees}</span>}
               </div>
             </div>
           </div>
-          <button onClick={deleteMeeting} className="btn-danger flex items-center gap-2"><Trash2 size={15} />Eliminar</button>
+          <button onClick={deleteMeeting} className="btn-danger flex items-center gap-2"><Trash2 size={15} />Delete</button>
         </div>
         <div className="space-y-5">
           <div className="card">
             <div className="flex items-center justify-between mb-3">
-              <h2 className="section-title">Notas</h2>
+              <h2 className="section-title">Notes</h2>
               {!editing
-                ? <button onClick={() => setEditing(true)} className="text-xs text-primary hover:underline">Editar</button>
-                : <div className="flex gap-2"><button onClick={() => setEditing(false)} className="text-xs text-muted-foreground">Cancelar</button><button onClick={saveContent} className="text-xs text-primary font-medium">Guardar</button></div>
+                ? <button onClick={() => setEditing(true)} className="text-xs text-primary hover:underline">Edit</button>
+                : <div className="flex gap-2"><button onClick={() => setEditing(false)} className="text-xs text-muted-foreground">Cancel</button><button onClick={saveContent} className="text-xs text-primary font-medium">Save</button></div>
               }
             </div>
             {editing
               ? <textarea className="input min-h-[200px] resize-y w-full" value={content} onChange={e => setContent(e.target.value)} autoFocus />
-              : <div className="min-h-[80px]">{content ? <p className="text-sm text-foreground/90 whitespace-pre-wrap leading-relaxed">{content}</p> : <p className="text-muted-foreground text-sm italic">Sin notas. Haz clic en Editar para agregar.</p>}</div>
+              : <div className="min-h-[80px]">{content ? <p className="text-sm text-foreground/90 whitespace-pre-wrap leading-relaxed">{content}</p> : <p className="text-muted-foreground text-sm italic">No notes yet. Click Edit to add some.</p>}</div>
             }
           </div>
           <div className="card">
             <div className="flex items-center justify-between mb-4">
-              <div><h2 className="section-title">Pendientes</h2>{total > 0 && <p className="text-xs text-muted-foreground mt-0.5">{done} de {total} completados</p>}</div>
+              <div><h2 className="section-title">Action items</h2>{total > 0 && <p className="text-xs text-muted-foreground mt-0.5">{done} of {total} done</p>}</div>
             </div>
             {total > 0 && <div className="h-1.5 bg-muted rounded-full mb-4 overflow-hidden"><div className="h-full bg-teal-500 rounded-full transition-all" style={{ width: `${(done/total)*100}%` }} /></div>}
             <ul className="space-y-2 mb-4">
@@ -112,8 +112,8 @@ export default function MeetingDetailPage({ params }: { params: Promise<{ id: st
               ))}
             </ul>
             <div className="flex gap-2 pt-3 border-t border-border/60">
-              <input className="input text-sm" placeholder="Agregar pendiente..." value={newItem} onChange={e => setNewItem(e.target.value)} onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addItem())} />
-              <button onClick={addItem} className="btn-primary flex items-center gap-1.5 text-sm py-2 px-3 whitespace-nowrap"><Plus size={14} />Agregar</button>
+              <input className="input text-sm" placeholder="Add action item..." value={newItem} onChange={e => setNewItem(e.target.value)} onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addItem())} />
+              <button onClick={addItem} className="btn-primary flex items-center gap-1.5 text-sm py-2 px-3 whitespace-nowrap"><Plus size={14} />Add</button>
             </div>
           </div>
         </div>
